@@ -38,7 +38,7 @@ int zalogujUzytkownika(vector<Uzytkownik>&);
 void zmienHaslo(int, vector<Uzytkownik>&);
 void zapiszZmienioneHasloDoPliku(vector<Uzytkownik>&);
 string konwersjaIntNaString(int);
-void dodajAdresata(int, int, vector<Adresat>&);
+int dodajAdresata(int, int, vector<Adresat>&);
 void dopiszAdresataDoPliku(Adresat);
 void wczytajAdresatowZPliku(int, vector<Adresat>&);
 Adresat pobierzDaneAdresata(string);
@@ -49,7 +49,7 @@ void wyszukajAdresatowPoNazwisku(vector<Adresat>&);
 void usunAdresata(vector<Adresat>&);
 int wczytajLiczbeCalkowita();
 void usunAdresataZPliku(int);
-int wczytajIdOstatniegoAdresata(vector<Adresat>&);
+int wczytajIdOstatniegoAdresata();
 void edytujAdresata(vector<Adresat>&);
 void edytujAdresataWPliku(vector<Adresat>&);
 
@@ -72,6 +72,7 @@ int main() {
 			switch (wybor) {
 			case '1':
 				idZalogowanegoUzytkownika = zalogujUzytkownika(uzytkownicy);
+				//idOstatniegoAdresata = wczytajIdOstatniegoAdresata(adresaci);
 				adresaci.clear();
 				wczytajAdresatowZPliku(idZalogowanegoUzytkownika, adresaci);
 				break;
@@ -97,8 +98,8 @@ int main() {
 			cin >> wybor;
 			switch (wybor) {
 			case '1':
-				idOstatniegoAdresata = wczytajIdOstatniegoAdresata(adresaci);
-				dodajAdresata(idZalogowanegoUzytkownika, idOstatniegoAdresata, adresaci);
+				idOstatniegoAdresata = dodajAdresata(idZalogowanegoUzytkownika, idOstatniegoAdresata, adresaci);
+				//dodajAdresata(idZalogowanegoUzytkownika, idOstatniegoAdresata, adresaci);
 				break;
 			case '2':
 				wyszukajAdresatowPoImieniu(adresaci);
@@ -288,7 +289,7 @@ string konwersjaIntNaString(int liczba) {
 	return str;
 }
 
-void dodajAdresata(int idZalogowanegoUzytkownika, int idOstatniegoAdresata, vector<Adresat>& adresaci) {
+int dodajAdresata(int idZalogowanegoUzytkownika, int idOstatniegoAdresata, vector<Adresat>& adresaci) {
 	Adresat adresat;
 	system("cls");
 	cout << " >>> DODAWANIE NOWEGO ADRESATA <<< \n\n";
@@ -313,6 +314,7 @@ void dodajAdresata(int idZalogowanegoUzytkownika, int idOstatniegoAdresata, vect
 	adresat.adres = wczytajLinie();
 	adresaci.push_back(adresat);
 	dopiszAdresataDoPliku(adresat);
+	return idOstatniegoAdresata + 1;
 }
 
 void dopiszAdresataDoPliku(Adresat adresat) {
@@ -470,17 +472,7 @@ void wyszukajAdresatowPoNazwisku(vector<Adresat>& adresaci) {
 
 void wypiszWszystkichAdresatow(vector<Adresat>& adresaci) {
 	system("cls");
-	cout << "Wyswietl Wszystkich Adresatow" << endl;
-	int liczbaAdresatow = adresaci.size();
-	for (int i = 0; i < liczbaAdresatow; i++) {
-		cout << "Id: " << adresaci[i].idAdresata << endl;
-		cout << "Imie: " << adresaci[i].imie << endl;
-		cout << "Nazwisko: " << adresaci[i].nazwisko << endl;
-		cout << "Numer Telefonu: " << adresaci[i].numerTelefonu << endl;
-		cout << "email: " << adresaci[i].email << endl;
-		cout << "Adres: " << adresaci[i].adres << endl << endl;
-	}
-	/*if (!adresaci.empty()) {
+	if (!adresaci.empty()) {
 		for (auto it = adresaci.begin(); it != adresaci.end(); it++) {
 			cout << "\nId: " << it->idAdresata;
 			cout << "\nImie: " << it->imie;
@@ -492,7 +484,7 @@ void wypiszWszystkichAdresatow(vector<Adresat>& adresaci) {
 	}
 	else {
 		cout << "\nKsiazka adresowa jest pusta.\n";
-	}*/
+	}
 	system("pause");
 }
 
@@ -576,7 +568,7 @@ void usunAdresataZPliku(int idUsuwanegoAdresata) {
 	rename(nazwaPlikuTymczasowego.c_str(), nazwaPlikuZAdresatami.c_str());
 }
 
-int wczytajIdOstatniegoAdresata(vector<Adresat>& adresaci) {
+int wczytajIdOstatniegoAdresata() {
 	Adresat adresat;
 	string daneAdresata = "";
 	int idOstatniegoAdresata = 0;
