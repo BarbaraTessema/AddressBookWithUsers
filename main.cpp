@@ -72,6 +72,8 @@ int main() {
 			switch (wybor) {
 			case '1':
 				idZalogowanegoUzytkownika = zalogujUzytkownika(uzytkownicy);
+				adresaci.clear();
+				wczytajAdresatowZPliku(idZalogowanegoUzytkownika, adresaci);
 				break;
 			case '2':
 				zarejestrujUzytkownika(uzytkownicy);
@@ -81,7 +83,6 @@ int main() {
 			}
 		}
 		else {
-			wczytajAdresatowZPliku(idZalogowanegoUzytkownika, adresaci);
 			system("cls");
 			cout << " >>> KSIAZKA ADRESOWA <<< \n\n";
 			cout << "1. Dodaj adresata\n";
@@ -120,9 +121,9 @@ int main() {
 			case '9':
 				idZalogowanegoUzytkownika = 0;
 			}
-		}	
+		}
 	}
-	
+
 	return 0;
 }
 
@@ -248,12 +249,12 @@ int zalogujUzytkownika(vector<Uzytkownik>& uzytkownicy) {
 
 void zmienHaslo(int idZalogowanegoUzytkownika, vector<Uzytkownik>& uzytkownicy) {
 	string haslo;
-	
+
 	for (auto it = uzytkownicy.begin(); it != uzytkownicy.end(); it++) {
 		if (it->idUzytkownika == idZalogowanegoUzytkownika) {
 			cout << "Podaj nowe haslo: ";
 			cin >> haslo;
-			it -> haslo = haslo;
+			it->haslo = haslo;
 			cout << "Haslo zostalo zmienione.\n";
 			zapiszZmienioneHasloDoPliku(uzytkownicy);
 		}
@@ -469,7 +470,17 @@ void wyszukajAdresatowPoNazwisku(vector<Adresat>& adresaci) {
 
 void wypiszWszystkichAdresatow(vector<Adresat>& adresaci) {
 	system("cls");
-	if (!adresaci.empty()) {
+	cout << "Wyswietl Wszystkich Adresatow" << endl;
+	int liczbaAdresatow = adresaci.size();
+	for (int i = 0; i < liczbaAdresatow; i++) {
+		cout << "Id: " << adresaci[i].idAdresata << endl;
+		cout << "Imie: " << adresaci[i].imie << endl;
+		cout << "Nazwisko: " << adresaci[i].nazwisko << endl;
+		cout << "Numer Telefonu: " << adresaci[i].numerTelefonu << endl;
+		cout << "email: " << adresaci[i].email << endl;
+		cout << "Adres: " << adresaci[i].adres << endl << endl;
+	}
+	/*if (!adresaci.empty()) {
 		for (auto it = adresaci.begin(); it != adresaci.end(); it++) {
 			cout << "\nId: " << it->idAdresata;
 			cout << "\nImie: " << it->imie;
@@ -481,7 +492,7 @@ void wypiszWszystkichAdresatow(vector<Adresat>& adresaci) {
 	}
 	else {
 		cout << "\nKsiazka adresowa jest pusta.\n";
-	}
+	}*/
 	system("pause");
 }
 
@@ -499,6 +510,7 @@ void usunAdresata(vector<Adresat>& adresaci) {
 			if (it->idAdresata == idUsuwanegoAdresata) {
 				czyIstniejeAdresat = true;
 				cout << "\nPotwierdz naciskajac klawisz t: ";
+				cin.clear();
 				cin.ignore();
 				cin >> znak;
 				if (znak == 't' || znak == 'T') {
@@ -688,6 +700,7 @@ void edytujAdresataWPliku(vector<Adresat>& adresaci) {
 	} while (linia != "");
 	plik.close();
 	plikTymczasowy.close();
-	remove(nazwaPlikuZAdresatami.c_str());
-	rename(nazwaPlikuTymczasowego.c_str(), nazwaPlikuZAdresatami.c_str());
+
+	remove("Adresaci.txt");
+	rename("Tymczasowy.txt", "Adresaci.txt");
 }
